@@ -22,7 +22,7 @@ suspend fun <T> safeCacheCall(
         }
     }
 }.onStart {
-    emit(DataState.Loading)
+    emit(DataState.Idle)
 }.catch {
     when (it) {
         is TimeoutCancellationException -> {

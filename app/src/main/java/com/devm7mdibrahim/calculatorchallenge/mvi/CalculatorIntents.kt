@@ -4,8 +4,12 @@ import com.devm7mdibrahim.domain.model.CalculatorModel
 
 sealed class CalculatorIntents {
     object InitViews : CalculatorIntents()
+    object AddClicked : CalculatorIntents()
+    object SubClicked : CalculatorIntents()
+    object MulClicked : CalculatorIntents()
+    object DivClicked : CalculatorIntents()
     class EqualClicked(val calculatorModel: CalculatorModel): CalculatorIntents()
-    object OperationClicked : CalculatorIntents()
-    object UndoClicked: CalculatorIntents()
-    object RedoClicked: CalculatorIntents()
+    class UndoClicked(val calculatorModel: CalculatorModel): CalculatorIntents()
+    class RedoClicked(val calculatorModel: CalculatorModel): CalculatorIntents()
+    class HistoryClicked(val calculatorModel: CalculatorModel): CalculatorIntents()
 }
