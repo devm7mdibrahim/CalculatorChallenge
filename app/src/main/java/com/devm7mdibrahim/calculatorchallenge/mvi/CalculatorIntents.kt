@@ -2,6 +2,9 @@ package com.devm7mdibrahim.calculatorchallenge.mvi
 
 import com.devm7mdibrahim.domain.model.CalculatorModel
 
+/**
+ * actions that will happened if user interact with view
+ */
 sealed class CalculatorIntents {
     object InitViews : CalculatorIntents()
     object AddClicked : CalculatorIntents()

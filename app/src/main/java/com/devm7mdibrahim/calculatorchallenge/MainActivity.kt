@@ -19,15 +19,24 @@ import kotlinx.coroutines.flow.onEach
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    /**
+     * Some public values to fill the calculator model with it
+     */
     private lateinit var operation: String
     private lateinit var secondOperand: String
     private var firstOperand: String = "0"
     private var currentIndex: Int = 0
     private var lastIndex: Int = 0
 
+    /**
+     * initialize the viewBinding and the viewModel
+     */
     private lateinit var binding: ActivityMainBinding
     private val viewModel by lazy { ViewModelProvider(this)[MainViewModel::class.java] }
 
+    /**
+     * lazy initialize the adapter and base the
+     */
     private val historyAdapter by lazy {
         HistoryAdapter(viewModel.intentChannel, lifecycleScope)
     }
@@ -39,10 +48,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         initRV()
 
+        /**
+         * send intent to initialize the default view
+         */
         lifecycleScope.launchWhenCreated {
             viewModel.intentChannel.send(CalculatorIntents.InitViews)
         }
 
+        /**
+         * listen of the updates of the viewStates and redraw the screen with the new data
+         */
         lifecycleScope.launchWhenCreated {
             viewModel.viewState.onEach {
                 drawScreen(it)
@@ -52,6 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun drawScreen(stateView: CalculatorStateView) {
         with(binding) {
+
             stateView.historyList?.let {
                 historyAdapter.submitList(it)
                 firstOperand = it.last().result.toString()
@@ -59,13 +75,24 @@ class MainActivity : AppCompatActivity() {
                 lastIndex = it.last().lastIndex
             }
 
+            /**
+             * display the result if it is not empty or null
+             */
             if (!stateView.result.isNullOrEmpty()) tvResult.text = stateView.result
+
+            /**
+             * enable the operations buttons if there is no running operation
+             * and clear the editText after the operations
+             */
             tvAdd.isEnabled = stateView.operationsButtonsEnabled
             tvSub.isEnabled = stateView.operationsButtonsEnabled
             tvMul.isEnabled = stateView.operationsButtonsEnabled
             tvDiv.isEnabled = stateView.operationsButtonsEnabled
             if (stateView.operationsButtonsEnabled) etNumber.setText("")
 
+            /**
+             * enable the equal button if the edit text is not empty and disable if it is
+             */
             tvEqual.isEnabled =
                 stateView.equalButtonEnabled && etNumber.text.toString().isNotEmpty()
 
@@ -73,6 +100,10 @@ class MainActivity : AppCompatActivity() {
                 tvEqual.isEnabled = stateView.equalButtonEnabled && it.toString().isNotEmpty()
             }
 
+            /**
+             * handle the exceptions if it is not null
+             * and show Toast messages
+             */
             stateView.throwable?.let {
                 when (it) {
                     is CalculatorException.DivideByZeroException -> {
@@ -92,9 +123,23 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            /**
+             * enable undo when the current if there is more than one history operations
+             * and the state of the view that there is no running operation
+             */
+
             tvUndo.isEnabled = (currentIndex >= 1 && !stateView.equalButtonEnabled)
+
+            /**
+             * enable redo when current position lower than the last index
+             * and the state of the view that there is no running operation
+             */
+
             tvRedo.isEnabled = (currentIndex < lastIndex && !stateView.equalButtonEnabled)
 
+            /**
+             * handle operations clicks
+             */
             tvAdd.setOnClickListener {
                 operation = "+"
                 sendOperationIntent()
@@ -119,6 +164,9 @@ class MainActivity : AppCompatActivity() {
                 handleEqualClick()
             }
 
+            /**
+             * handle undo and redo actions
+             */
             tvUndo.setOnClickListener {
                 currentIndex -= 1
                 sendUndoIntent()

@@ -23,8 +23,14 @@ class MainViewModel @Inject constructor(
     private val redoUseCase: RedoUseCase
 ) : ViewModel() {
 
+    /**
+     * channel to send intents
+     */
     val intentChannel = Channel<CalculatorIntents>(Channel.UNLIMITED)
 
+    /**
+     * the view states the we will listen on and update UI if there is any change
+     */
     private val _viewState = MutableStateFlow(CalculatorStateView())
     val viewState: StateFlow<CalculatorStateView> get() = _viewState
 
@@ -32,6 +38,9 @@ class MainViewModel @Inject constructor(
         processIntent()
     }
 
+    /**
+     * map the intent to state view and run the logic
+     */
     private fun processIntent() {
         viewModelScope.launch {
             intentChannel.consumeAsFlow().collect {
@@ -41,51 +50,19 @@ class MainViewModel @Inject constructor(
                     }
 
                     is CalculatorIntents.AddClicked -> {
-                        _viewState.emit(
-                            CalculatorStateView(
-                                historyList = null,
-                                throwable = null,
-                                result = null,
-                                operationsButtonsEnabled = false,
-                                equalButtonEnabled = true,
-                            )
-                        )
+                        onOperationClick()
                     }
 
                     is CalculatorIntents.SubClicked -> {
-                        _viewState.emit(
-                            CalculatorStateView(
-                                historyList = null,
-                                throwable = null,
-                                result = null,
-                                operationsButtonsEnabled = false,
-                                equalButtonEnabled = true,
-                            )
-                        )
+                        onOperationClick()
                     }
 
                     is CalculatorIntents.MulClicked -> {
-                        _viewState.emit(
-                            CalculatorStateView(
-                                historyList = null,
-                                throwable = null,
-                                result = null,
-                                operationsButtonsEnabled = false,
-                                equalButtonEnabled = true,
-                            )
-                        )
+                        onOperationClick()
                     }
 
                     is CalculatorIntents.DivClicked -> {
-                        _viewState.emit(
-                            CalculatorStateView(
-                                historyList = null,
-                                throwable = null,
-                                result = null,
-                                operationsButtonsEnabled = false,
-                                equalButtonEnabled = true,
-                            )
-                        )
+                        onOperationClick()
                     }
 
                     is CalculatorIntents.EqualClicked -> {
@@ -108,6 +85,26 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * update view state on operation click to make all buttons disabled except equal button
+     */
+    private fun onOperationClick(){
+        viewModelScope.launch {
+            _viewState.emit(
+                CalculatorStateView(
+                    historyList = null,
+                    throwable = null,
+                    result = null,
+                    operationsButtonsEnabled = false,
+                    equalButtonEnabled = true,
+                )
+            )
+        }
+    }
+
+    /**
+     * on Equal clicked, check for the operation and perform it
+     */
     private fun performOperation(calculatorModel: CalculatorModel) {
         viewModelScope.launch {
             when(calculatorModel.operation){
@@ -177,18 +174,6 @@ class MainViewModel @Inject constructor(
                         )
                     )
                 }
-
-                is DataState.Idle -> {
-                    _viewState.emit(
-                        CalculatorStateView(
-                            historyList = null,
-                            throwable = null,
-                            result = null,
-                            operationsButtonsEnabled = false,
-                            equalButtonEnabled = false
-                        )
-                    )
-                }
             }
         }
     }
@@ -216,18 +201,6 @@ class MainViewModel @Inject constructor(
                                 throwable = it.throwable,
                                 result = null,
                                 operationsButtonsEnabled = true,
-                                equalButtonEnabled = false,
-                            )
-                        )
-                    }
-
-                    is DataState.Idle -> {
-                        _viewState.emit(
-                            CalculatorStateView(
-                                historyList = null,
-                                throwable = null,
-                                result = null,
-                                operationsButtonsEnabled = false,
                                 equalButtonEnabled = false,
                             )
                         )
@@ -260,18 +233,6 @@ class MainViewModel @Inject constructor(
                                 throwable = null,
                                 result = it.data.last().result.toString(),
                                 operationsButtonsEnabled = true,
-                                equalButtonEnabled = false,
-                            )
-                        )
-                    }
-
-                    is DataState.Idle -> {
-                        _viewState.emit(
-                            CalculatorStateView(
-                                historyList = null,
-                                throwable = null,
-                                result = null,
-                                operationsButtonsEnabled = false,
                                 equalButtonEnabled = false,
                             )
                         )

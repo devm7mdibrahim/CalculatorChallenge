@@ -10,6 +10,10 @@ import com.devm7mdibrahim.domain.model.CalculatorModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 
+/**
+ * adapter of the operations history
+ * pass the intents to handle events on items
+ */
 class HistoryAdapter(
     private val intents: Channel<CalculatorIntents>,
     private val lifecycleScope: LifecycleCoroutineScope
@@ -18,6 +22,9 @@ class HistoryAdapter(
 
     private var historyList = mutableListOf<CalculatorModel>()
 
+    /**
+     * submit history new list and notify changes to update RV
+     */
     fun submitList(list: List<CalculatorModel>) {
         historyList.clear()
         historyList.addAll(list)
@@ -43,6 +50,10 @@ class HistoryAdapter(
 
     inner class HistoryViewHolder(private val binding: ItemHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        /**
+         * bind the adapter view and display the data and handle history item click
+         */
         fun bind(calculatorModel: CalculatorModel) {
             val operation = StringBuilder()
             operation.append(calculatorModel.operation)
