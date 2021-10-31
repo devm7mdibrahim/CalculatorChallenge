@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by lazy { ViewModelProvider(this)[MainViewModel::class.java] }
 
     /**
-     * lazy initialize the adapter and base the
+     * lazy initialize the adapter
      */
     private val historyAdapter by lazy {
         HistoryAdapter(viewModel.intentChannel, lifecycleScope)
