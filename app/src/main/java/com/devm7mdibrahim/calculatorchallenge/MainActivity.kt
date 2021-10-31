@@ -2,6 +2,7 @@ package com.devm7mdibrahim.calculatorchallenge
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -10,6 +11,7 @@ import com.devm7mdibrahim.calculatorchallenge.databinding.ActivityMainBinding
 import com.devm7mdibrahim.calculatorchallenge.mvi.CalculatorIntents
 import com.devm7mdibrahim.calculatorchallenge.mvi.CalculatorStateView
 import com.devm7mdibrahim.domain.model.CalculatorModel
+import com.devm7mdibrahim.domain.usecases.CalculatorException
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -48,18 +50,44 @@ class MainActivity : AppCompatActivity() {
 
     private fun drawScreen(stateView: CalculatorStateView) {
         with(binding) {
-            stateView.historyList?.let { historyAdapter.submitList(it) }
-            tvResult.text = stateView.result
+            stateView.historyList?.let {
+                historyAdapter.submitList(it)
+                firstOperand = it.last().result.toString()
+            }
+
+            if (!stateView.result.isNullOrEmpty()) tvResult.text = stateView.result
             tvAdd.isEnabled = stateView.operationsButtonsEnabled
             tvSub.isEnabled = stateView.operationsButtonsEnabled
             tvMul.isEnabled = stateView.operationsButtonsEnabled
             tvDiv.isEnabled = stateView.operationsButtonsEnabled
+            if (stateView.operationsButtonsEnabled) etNumber.setText("")
 
-            if (stateView.equalButtonEnabled) {
-                binding.etNumber.addTextChangedListener {
-                    tvEqual.isEnabled = it.toString().isNotEmpty()
+            tvEqual.isEnabled =
+                stateView.equalButtonEnabled && etNumber.text.toString().isNotEmpty()
+
+            binding.etNumber.addTextChangedListener {
+                tvEqual.isEnabled = stateView.equalButtonEnabled && it.toString().isNotEmpty()
+            }
+
+            stateView.throwable?.let {
+                when (it) {
+                    is CalculatorException.DivideByZeroException -> {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Can't divide by zero",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    else -> {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "something went wrong",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             }
+
 
             tvUndo.isEnabled = stateView.undoButtonEnabled
             tvRedo.isEnabled = stateView.redoButtonEnabled
@@ -92,6 +120,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleEqualClick() {
+        secondOperand = binding.etNumber.text.toString()
         lifecycleScope.launchWhenCreated {
             viewModel.intentChannel.send(
                 CalculatorIntents.EqualClicked(

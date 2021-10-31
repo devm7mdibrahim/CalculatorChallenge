@@ -19,6 +19,7 @@ class HistoryAdapter(
     private var historyList = mutableListOf<CalculatorModel>()
 
     fun submitList(list: List<CalculatorModel>) {
+        historyList.clear()
         historyList.addAll(list)
         notifyDataSetChanged()
     }
@@ -45,7 +46,6 @@ class HistoryAdapter(
         fun bind(calculatorModel: CalculatorModel) {
             val operation = StringBuilder()
             operation.append(calculatorModel.operation)
-            operation.append(" ")
             operation.append(calculatorModel.secondOperand)
             with(binding.tvOperation) {
                 text = operation.toString()

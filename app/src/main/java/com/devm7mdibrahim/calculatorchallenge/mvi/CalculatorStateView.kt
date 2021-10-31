@@ -7,10 +7,6 @@ data class CalculatorStateView(
     val throwable: Throwable? = null,
     val result: String? = null,
     val operationsButtonsEnabled: Boolean = true,
-    val addButtonClicked: Boolean = false,
-    val subButtonClicked: Boolean = false,
-    val mulButtonClicked: Boolean = false,
-    val divButtonClicked: Boolean = false,
     val equalButtonEnabled: Boolean = false,
     val undoButtonEnabled: Boolean = false,
     val redoButtonEnabled: Boolean = false
