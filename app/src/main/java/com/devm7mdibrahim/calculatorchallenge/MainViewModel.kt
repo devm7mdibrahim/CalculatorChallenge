@@ -48,8 +48,6 @@ class MainViewModel @Inject constructor(
                                 result = null,
                                 operationsButtonsEnabled = false,
                                 equalButtonEnabled = true,
-                                undoButtonEnabled = false,
-                                redoButtonEnabled = false
                             )
                         )
                     }
@@ -62,8 +60,6 @@ class MainViewModel @Inject constructor(
                                 result = null,
                                 operationsButtonsEnabled = false,
                                 equalButtonEnabled = true,
-                                undoButtonEnabled = false,
-                                redoButtonEnabled = false
                             )
                         )
                     }
@@ -76,8 +72,6 @@ class MainViewModel @Inject constructor(
                                 result = null,
                                 operationsButtonsEnabled = false,
                                 equalButtonEnabled = true,
-                                undoButtonEnabled = false,
-                                redoButtonEnabled = false
                             )
                         )
                     }
@@ -90,8 +84,6 @@ class MainViewModel @Inject constructor(
                                 result = null,
                                 operationsButtonsEnabled = false,
                                 equalButtonEnabled = true,
-                                undoButtonEnabled = false,
-                                redoButtonEnabled = false
                             )
                         )
                     }
@@ -109,21 +101,7 @@ class MainViewModel @Inject constructor(
                     }
 
                     is CalculatorIntents.HistoryClicked -> {
-//                        _viewState.emit(
-//                            CalculatorStateView(
-//                                historyList = null,
-//                                throwable = null,
-//                                result = it.calculatorModel.result.toString(),
-//                                operationsButtonsEnabled = true,
-//                                addButtonClicked = false,
-//                                subButtonClicked = false,
-//                                mulButtonClicked = false,
-//                                divButtonClicked = false,
-//                                equalButtonEnabled = false,
-//                                undoButtonEnabled = false,
-//                                redoButtonEnabled = true
-//                            )
-//                        )
+                        undo(it.calculatorModel)
                     }
                 }
             }
@@ -183,9 +161,7 @@ class MainViewModel @Inject constructor(
                             throwable = null,
                             result = result.data.last().result.toString(),
                             operationsButtonsEnabled = true,
-                            equalButtonEnabled = false,
-                            undoButtonEnabled = false,
-                            redoButtonEnabled = false
+                            equalButtonEnabled = false
                         )
                     )
                 }
@@ -197,9 +173,7 @@ class MainViewModel @Inject constructor(
                             throwable = result.throwable,
                             result = null,
                             operationsButtonsEnabled = true,
-                            equalButtonEnabled = false,
-                            undoButtonEnabled = false,
-                            redoButtonEnabled = false
+                            equalButtonEnabled = false
                         )
                     )
                 }
@@ -211,9 +185,7 @@ class MainViewModel @Inject constructor(
                             throwable = null,
                             result = null,
                             operationsButtonsEnabled = false,
-                            equalButtonEnabled = false,
-                            undoButtonEnabled = false,
-                            redoButtonEnabled = false
+                            equalButtonEnabled = false
                         )
                     )
                 }
@@ -233,8 +205,6 @@ class MainViewModel @Inject constructor(
                                 result = it.data.last().result.toString(),
                                 operationsButtonsEnabled = true,
                                 equalButtonEnabled = false,
-                                undoButtonEnabled = false,
-                                redoButtonEnabled = true
                             )
                         )
                     }
@@ -247,8 +217,6 @@ class MainViewModel @Inject constructor(
                                 result = null,
                                 operationsButtonsEnabled = true,
                                 equalButtonEnabled = false,
-                                undoButtonEnabled = false,
-                                redoButtonEnabled = true
                             )
                         )
                     }
@@ -261,8 +229,6 @@ class MainViewModel @Inject constructor(
                                 result = null,
                                 operationsButtonsEnabled = false,
                                 equalButtonEnabled = false,
-                                undoButtonEnabled = false,
-                                redoButtonEnabled = false
                             )
                         )
                     }
@@ -283,8 +249,6 @@ class MainViewModel @Inject constructor(
                                 result = null,
                                 operationsButtonsEnabled = true,
                                 equalButtonEnabled = false,
-                                undoButtonEnabled = true,
-                                redoButtonEnabled = false
                             )
                         )
                     }
@@ -297,8 +261,6 @@ class MainViewModel @Inject constructor(
                                 result = it.data.last().result.toString(),
                                 operationsButtonsEnabled = true,
                                 equalButtonEnabled = false,
-                                undoButtonEnabled = true,
-                                redoButtonEnabled = false
                             )
                         )
                     }
@@ -311,8 +273,6 @@ class MainViewModel @Inject constructor(
                                 result = null,
                                 operationsButtonsEnabled = false,
                                 equalButtonEnabled = false,
-                                undoButtonEnabled = false,
-                                redoButtonEnabled = false
                             )
                         )
                     }

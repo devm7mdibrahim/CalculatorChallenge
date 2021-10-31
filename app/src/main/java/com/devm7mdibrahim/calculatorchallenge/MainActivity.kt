@@ -22,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var operation: String
     private lateinit var secondOperand: String
     private var firstOperand: String = "0"
+    private var currentIndex: Int = 0
+    private var lastIndex: Int = 0
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel by lazy { ViewModelProvider(this)[MainViewModel::class.java] }
@@ -53,6 +55,8 @@ class MainActivity : AppCompatActivity() {
             stateView.historyList?.let {
                 historyAdapter.submitList(it)
                 firstOperand = it.last().result.toString()
+                currentIndex = it.last().currentIndex
+                lastIndex = it.last().lastIndex
             }
 
             if (!stateView.result.isNullOrEmpty()) tvResult.text = stateView.result
@@ -88,10 +92,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-
-            tvUndo.isEnabled = stateView.undoButtonEnabled
-            tvRedo.isEnabled = stateView.redoButtonEnabled
-
+            tvUndo.isEnabled = (currentIndex >= 1 && !stateView.equalButtonEnabled)
+            tvRedo.isEnabled = (currentIndex < lastIndex && !stateView.equalButtonEnabled)
 
             tvAdd.setOnClickListener {
                 operation = "+"
@@ -115,6 +117,16 @@ class MainActivity : AppCompatActivity() {
 
             tvEqual.setOnClickListener {
                 handleEqualClick()
+            }
+
+            tvUndo.setOnClickListener {
+                currentIndex -= 1
+                sendUndoIntent()
+            }
+
+            tvRedo.setOnClickListener {
+                currentIndex += 1
+                sendRedoIntent()
             }
         }
     }
@@ -142,6 +154,18 @@ class MainActivity : AppCompatActivity() {
                 "*" -> viewModel.intentChannel.send(CalculatorIntents.MulClicked)
                 "/" -> viewModel.intentChannel.send(CalculatorIntents.DivClicked)
             }
+        }
+    }
+
+    private fun sendUndoIntent() {
+        lifecycleScope.launchWhenCreated {
+            viewModel.intentChannel.send(CalculatorIntents.UndoClicked(CalculatorModel(currentIndex = currentIndex)))
+        }
+    }
+
+    private fun sendRedoIntent() {
+        lifecycleScope.launchWhenCreated {
+            viewModel.intentChannel.send(CalculatorIntents.UndoClicked(CalculatorModel(currentIndex = currentIndex)))
         }
     }
 

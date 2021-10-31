@@ -8,6 +8,4 @@ data class CalculatorStateView(
     val result: String? = null,
     val operationsButtonsEnabled: Boolean = true,
     val equalButtonEnabled: Boolean = false,
-    val undoButtonEnabled: Boolean = false,
-    val redoButtonEnabled: Boolean = false
 )

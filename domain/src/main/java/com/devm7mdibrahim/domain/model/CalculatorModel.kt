@@ -6,5 +6,6 @@ data class CalculatorModel(
     var operation: String= "",
     var result: Double = 0.0,
     var id: Int = 0,
-    var currentIndex: Int = 0
+    var currentIndex: Int = 0,
+    var lastIndex: Int = 0
 )
